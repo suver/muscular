@@ -3,7 +3,7 @@ import json
 import os
 import io
 import urllib
-
+from urllib.parse import unquote
 from .request import Request, RequestMaker
 from .response import Response
 from .routers import routes, itinerary
@@ -393,7 +393,7 @@ class WsgiServer:
         :return:
         """
         path = request.path.replace(static['prefix'] + '/', '', 1)
-        resp_file = os.path.join(static['directory'], path)
+        resp_file = os.path.join(static['directory'], unquote(path))
 
         if not os.path.isfile(resp_file):
             self.logger.debug(self.locale("Не удалось найти подходящий файл"))

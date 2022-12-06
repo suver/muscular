@@ -99,6 +99,10 @@ class Response:
             content_type = 'text/html; charset=utf-8'
 
         headers.append(('Content-Type', content_type))
+        headers.append(("Access-Control-Allow-Origin", "*"))
+        headers.append(("Access-Control-Allow-Methods", "POST,GET,PUT,DELETE,OPTIONS"))
+        headers.append(("Access-Control-Allow-Headers", "Content-type"))
+        headers.append(("Access-Control-Allow-Credentials", "true"))
 
         if body:
             headers.append(('Content-Length', str(len(body))))
