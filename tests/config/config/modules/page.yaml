@@ -1,0 +1,5 @@
+page:
+  package: app.modules.page
+  name: Page
+  static_folder: /static/page
+

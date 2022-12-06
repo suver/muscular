@@ -1,0 +1,55 @@
+main:
+  basedir: !basedir
+  base_url: !environ BASE_URL or localhost:5000
+  server_name: !environ SERVER_NAME or localhost:5000
+  host: !environ HOST or localhost
+  port: !environ PORT or 8080
+  env: !environ FLASK_ENV or production
+  debug: !environ DEBUG or False
+  timezone: UTC
+  main_route: page.index
+  locale_mode: cookie # url, cookie - переключение языка
+
+  languages:
+    en:
+      name: English
+      icon: /static/media/svg/flags/en.svg
+    ru:
+      name: Русский
+      icon: /static/media/svg/flags/ru.svg
+    en_US:
+      name: Unaited State
+      icon: /static/media/svg/flags/us.svg
+
+  default_language: en
+
+  secret_key: !environ SECRET_KEY or dhU73jslvbglsjg&20lfjsl
+  csrf_enabled: False
+
+
+acl: !include ./config/acl.yaml
+
+
+params:
+  ContactMail: support@twonerds.xyz
+
+authorization:
+  bearer:
+    - key: sDJ72344sdF5435dsfgpeiv2534ndj4HkdUfsj4
+      name: Core
+      roles:
+        - root
+
+modules: !include_dir ./config/modules
+
+
+middlewares:
+  - package: app.middleware.example
+  - package: app.middleware.authorization
+    user:
+      class: User
+      package: app.modules.user.models
+
+schemas:
+
+
