@@ -28,6 +28,11 @@ class BaseColumn(Schema):
             self.column_name: self.field_type.dump()
         }
 
+    def to_json(self) -> dict:
+        return {
+            self.column_name: self.field_type.getstate(self.value)
+        }
+
 
 class Column(BaseColumn):
 
@@ -80,5 +85,6 @@ class Column(BaseColumn):
             "value": self.default,
             "primary_key": self.primary_key,
             "example": self.example,
+            "example1": self.example,
         })
         return results

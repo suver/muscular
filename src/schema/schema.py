@@ -53,3 +53,9 @@ class Schema(ABC):
             "class": self.__class__.__name__,
             "children": results
         }
+
+    def to_json(self) -> dict:
+        results = []
+        for child in self._children:
+            results.append(child.to_json())
+        return results

@@ -3,6 +3,7 @@ from ...schema import Collection, Column
 from sqlalchemy import create_engine, text
 from ..driver import DatabaseLinkDriver, DataDriver
 from ...storage import StorageMapper
+
 storageMapper = StorageMapper()
 
 
@@ -31,9 +32,9 @@ class LinkDatabaseLinkDriver(DatabaseLinkDriver):
             database=config.database,
         )
         logger.debug(locale("Подключаемся {driver_name}.connect({url})",
-            driver_name=self.instance.__class__.__name__,
-            url=url
-        ))
+                            driver_name=self.instance.__class__.__name__,
+                            url=url
+                            ))
         self.instance.url = url
         self.instance.engine = create_engine(url, future=True)
         self.instance.connection = self.instance.engine.connect()
@@ -61,10 +62,10 @@ class ExecuteDatabaseLinkDriver(DatabaseLinkDriver):
         if not self.instance.connection:
             return None
         logger.debug(locale('{driver_name}.execute("{query}", {params})',
-            query=query,
-            params=params,
-            driver_name=self.instance.__class__.__name__
-        ))
+                            query=query,
+                            params=params,
+                            driver_name=self.instance.__class__.__name__
+                            ))
         result = self.instance.connection.execute(text(query), params)
         if not self.instance._session:
             self.instance.commit()
@@ -93,8 +94,8 @@ class TransactionDatabaseLinkDriver(DatabaseLinkDriver):
             return None
         self.instance._session = True
         logger.debug(locale('{driver_name}.transaction()',
-            driver_name=self.instance.__class__.__name__
-        ))
+                            driver_name=self.instance.__class__.__name__
+                            ))
 
     def commit(self):
         """
@@ -109,8 +110,8 @@ class TransactionDatabaseLinkDriver(DatabaseLinkDriver):
         self.instance.connection.commit()
         self.instance._session = False
         logger.debug(locale('{driver_name}.commit()',
-            driver_name=self.instance.__class__.__name__
-        ))
+                            driver_name=self.instance.__class__.__name__
+                            ))
 
     def flush(self):
         """
@@ -124,8 +125,8 @@ class TransactionDatabaseLinkDriver(DatabaseLinkDriver):
             return None
         self.instance.connection.flush()
         logger.debug(locale('{driver_name}.flush()',
-            driver_name=self.instance.__class__.__name__
-        ))
+                            driver_name=self.instance.__class__.__name__
+                            ))
 
     def rollback(self):
         """
@@ -140,8 +141,8 @@ class TransactionDatabaseLinkDriver(DatabaseLinkDriver):
         self.instance.connection.rollback()
         self.instance._session = False
         logger.debug(locale('{driver_name}.rollback()',
-            driver_name=self.instance.__class__.__name__
-        ))
+                            driver_name=self.instance.__class__.__name__
+                            ))
 
 
 class CommandDatabaseLinkDriver(DatabaseLinkDriver):
@@ -162,12 +163,15 @@ class CommandDatabaseLinkDriver(DatabaseLinkDriver):
         :param check_collection: Название таблицы.
         :return:
         """
-        collections = self.instance.collections()
-        is_exist = False
-        for row in collections:
-            if row == check_collection:
-                is_exist = True
-        return is_exist
+        try:
+            collections = self.instance.collections()
+            is_exist = False
+            for row in collections:
+                if row == check_collection:
+                    is_exist = True
+            return is_exist
+        except Exception:
+            return False
 
 
 class SchemaDatabaseLinkDriver(DatabaseLinkDriver):
@@ -231,7 +235,7 @@ class SchemaDatabaseLinkDriver(DatabaseLinkDriver):
             if isinstance(self.instance._column, Column):
                 return self.instance.execute(
                     self.instance._add_column(self.instance._column,
-                                     after=after, collection_name=collection_name))
+                                              after=after, collection_name=collection_name))
         except Exception as e:
             logger.exception(locale('Ошибка %s.add_column()', self.instance.__class__.__name__))
             raise e
@@ -249,7 +253,8 @@ class SchemaDatabaseLinkDriver(DatabaseLinkDriver):
         if collection_name is None:
             collection_name = self.instance._collection.collection_name
         try:
-            return self.instance.execute(self.instance._drop_column(column=column_name, collection_name=collection_name))
+            return self.instance.execute(
+                self.instance._drop_column(column=column_name, collection_name=collection_name))
         except Exception as e:
             logger.exception(locale('Ошибка %s.drop_column()', self.instance.__class__.__name__))
             raise e
@@ -370,10 +375,10 @@ class InsertDatabaseLinkDriver(DatabaseLinkDriver):
         :return:
         """
         return "INSERT INTO {table} ({columns}) VALUES ({values}){returning}".format(
-            table = model.collection,
-            columns = ", ".join(columns),
-            values = ", ".join(values),
-            returning = " RETURNING {value}".format(value=", ".join(returning)) if returning else '',
+            table=model.collection,
+            columns=", ".join(columns),
+            values=", ".join(values),
+            returning=" RETURNING {value}".format(value=", ".join(returning)) if returning else '',
         )
 
     def _sql_insert_returning(self, model):
@@ -419,11 +424,9 @@ class InsertDatabaseLinkDriver(DatabaseLinkDriver):
                 value = model.columns[column].value
                 if isinstance(model.columns[column].field_type, Key) and value is None:
                     pass
+                elif value is None:
+                    values.append('null')
                 elif model.columns[column].field_type.data_type == 'enum' and value is not None:
-                    print(column)
-                    print(value)
-                    print(model.columns[column].field_type)
-                    print(model.columns[column].field_type.enums)
                     values.append("{value}".format(value=model.columns[column].field_type.enums.index(value)))
                 elif isinstance(value, str) and model.columns[column].value.isnumeric():
                     values.append("{value}".format(value=value))
@@ -431,8 +434,6 @@ class InsertDatabaseLinkDriver(DatabaseLinkDriver):
                     values.append("'{value}'".format(value=str(value)))
                 elif isinstance(value, str):
                     values.append("'{value}'".format(value=value))
-                elif value is None:
-                    values.append('null')
                 elif isinstance(value, bool):
                     values.append('{value}'.format(value='true' if value else 'false'))
                 else:
@@ -476,8 +477,8 @@ class DeleteDatabaseLinkDriver(DatabaseLinkDriver):
         :return:
         """
         return "DELETE FROM {table} WHERE {where}".format(
-            table = model.collection,
-            where = " and ".join(where),
+            table=model.collection,
+            where=" and ".join(where),
         )
 
     def _sql_delete_where(self, model):
@@ -545,9 +546,9 @@ class UpdateDatabaseLinkDriver(DatabaseLinkDriver):
         :return:
         """
         return "UPDATE {table} SET {columns} WHERE {where}".format(
-            table = model.collection,
-            where = " and ".join(where),
-            columns = ", ".join(columns),
+            table=model.collection,
+            where=" and ".join(where),
+            columns=", ".join(columns),
         )
 
     def _sql_update_columns(self, model):
@@ -678,8 +679,8 @@ class FindDatabaseLinkDriver(DatabaseLinkDriver):
         :return:
         """
         return "SELECT * FROM {table} WHERE {where}".format(
-            table = model.collection,
-            where = " and ".join(where),
+            table=model.collection,
+            where=" and ".join(where),
         )
 
     def _sql_find_where(self, model, query):
@@ -699,4 +700,3 @@ class FindDatabaseLinkDriver(DatabaseLinkDriver):
                 value = "{value}".format(value=query[q])
             columns.append("{column}={value}".format(column=q, value=value))
         return columns
-

@@ -1,4 +1,4 @@
-from ..schema import Schema, Model
+from ..schema import Schema, Model, Collection
 import inspect
 
 
@@ -117,6 +117,8 @@ class Swagger(Schema):
         if len(self.models) > 0:
             for model in self.models:
                 if isinstance(model, Model):
+                    _models.update(model.dump())
+                if isinstance(model, Collection):
                     _models.update(model.dump())
         return _models
 

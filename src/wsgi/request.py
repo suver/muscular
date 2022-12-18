@@ -768,11 +768,12 @@ class RequestMaker:
             else:
                 return {}
         except json.JSONDecodeError as e:
-            logger.debug(locale('%s. Input: %s' % (e, wsgi_input)))
+            logger.debug(locale("JSON ERROR: %s" % e))
+            raise ValueError(locale("JSON ERROR: %s" % e))
             return {}
         except UnicodeDecodeError as e:
-            print(e)
             logger.debug(locale('%s' % e))
+            raise ValueError(locale("JSON ERROR: %s" % e))
             return {}
 
     def make_body_from_form(self):

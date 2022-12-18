@@ -1,5 +1,6 @@
 from .schema import Schema
-from .model import Model
+from .model import BaseModel
+from .collection import Collection
 
 
 class RequestBody(Schema):
@@ -19,7 +20,9 @@ class RequestBody(Schema):
         results = []
         for child in self._children:
             results.append(child.dump())
-        if self.model and isinstance(self.model, Model):
+        if self.model and isinstance(self.model, BaseModel):
+            model = {"$ref": "#/components/schemas/%s" % self.model.__class__.__name__}
+        elif self.model and isinstance(self.model, Collection):
             model = {"$ref": "#/components/schemas/%s" % self.model.__class__.__name__}
         else:
             model = self.model.dump() if hasattr(self, 'model') and hasattr(self.model, 'dump') else None

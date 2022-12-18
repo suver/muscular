@@ -29,7 +29,6 @@ class Swagger(Schema):
         if kwargs.get('parameters'):
             self.parameters = kwargs.get('parameters')
 
-
     def dump(self) -> dict:
         results = []
         for child in self._children:

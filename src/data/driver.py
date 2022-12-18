@@ -1,6 +1,6 @@
 from typing import Union
 from .database import DBPool
-from ..models import Collection, Column
+from ..schema import Collection, Column
 from ..storage import StorageMapper
 storageMapper = StorageMapper()
 

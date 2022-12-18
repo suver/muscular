@@ -27,6 +27,16 @@ class BaseModel(Schema):
         })
         return results
 
+    def to_json(self) -> dict:
+        results = {}
+        results_ = {}
+        for child in self.columns:
+            if callable(self.columns[child]):
+                self.columns[child] = self.columns[child]()
+            results_.update(self.columns[child].to_json())
+        results.update(results_)
+        return results
+
 
 class Model(BaseModel):
 
@@ -43,7 +53,7 @@ class Model(BaseModel):
         if len(kwargs) > 0 and hasattr(self, 'columns'):
             for column in self.columns:
                 self.columns[column].value = kwargs.get(column) or self.columns[column].default or None
-                print(column, kwargs.get(column), self.columns[column])
+                # print(column, kwargs.get(column), self.columns[column])
 
     def __init_subclass__(cls, *args, **kwargs):
         super().__init_subclass__()

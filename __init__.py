@@ -106,6 +106,7 @@ __all__ = (
     "Numeric",
     "Binary",
     "String",
+    "Json",
     "SmallInteger",
     "Integer",
     "Date",

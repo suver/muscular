@@ -185,4 +185,7 @@ class StorageMapper:
         :param key:
         :return:
         """
-        return self[key]
+        try:
+            return self[key]
+        except Exception:
+            return None

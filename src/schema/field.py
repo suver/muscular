@@ -1,3 +1,5 @@
+import json
+
 from .schema import Schema
 
 
@@ -20,6 +22,15 @@ class BaseField(Schema):
             "format": self.data_format,
         })
         return results
+
+    def to_json(self) -> dict:
+        return self
+
+    def getstate(self, value) -> dict:
+        return value
+
+    def setstate(self, value) -> dict:
+        return value
 
 
 class Boolean(BaseField):
@@ -197,6 +208,29 @@ class String(BaseField):
             "length": self.length,
         })
         return results
+
+
+class Json(BaseField):
+
+    data_type = 'string'
+
+    def __init__(self, *args, length=255, **kwargs):
+        kwargs['length'] = length
+        super().__init__(*args, **kwargs)
+        self.length = length
+
+    def dump(self) -> dict:
+        results = super().dump()
+        results.update({
+            "length": self.length,
+        })
+        return results
+
+    def getstate(self, value) -> dict:
+        return json.loads(value)
+
+    def setstate(self, value) -> dict:
+        return json.dumps(value)
 
 
 class File(BaseField):

@@ -26,6 +26,7 @@ __all__ = (
     "Enum",
     "Float",
     "Binary",
+    "Json",
     "String",
     "Numeric",
     "SmallInteger",

@@ -4,8 +4,9 @@ import importlib.machinery
 import importlib.util
 from .database import DBPool
 from .drivers import Postgres
-from ..models import Collection, Column, String
+from ..schema import Collection, Column, String
 from ..storage import StorageMapper
+
 storageMapper = StorageMapper()
 locale = storageMapper.get('locale')
 logger = storageMapper.get('logger')
@@ -61,8 +62,9 @@ def remove_checkpoint(connection, file):
 
 
 t = Collection('migrations',
-    Column('migrate', String),
-)
+               Column('migrate', String),
+               )
+
 
 @cli.group(description=locale('Группа команд для работы с миграциями'))
 def migrate(*args):
@@ -72,17 +74,18 @@ def migrate(*args):
 
     """
     pool = DBPool(Postgres)
+    meta_collection_find = False
     for connection_name, connect in pool:
         if connect.meta:
+            meta_collection_find = True
             if not connect.is_collection('migrations'):
                 logger.debug(locale('Создаем коллекцию `migrations`'))
                 connect.transaction()
                 connect.collection(t).create()
                 connect.commit()
-        else:
-            logger.exception(locale('Необходимо для одного из соеденений с типом Postgres установить флаг '
-                                    '`meta` рвным True'))
-
+    if not meta_collection_find:
+        logger.exception(locale('Необходимо для одного из соеденений с типом Postgres установить флаг '
+                                '`meta` рвным True'))
 
 
 @migrate.command(command_name='up', description=locale('Применить миграцию'))
@@ -90,7 +93,7 @@ def up(*args):
     """
     migrate up проверяет прпау с миграциями и применяет те, что еще не были применены ранее
     """
-    path='./migrations'
+    path = './migrations'
 
     meta_connect = None
     pool = DBPool(Postgres)
@@ -113,7 +116,7 @@ def up(*args):
                         save_checkpoint(meta_connect, entry.name)
                     else:
                         logger.error(locale('Прервали выполнение. Миграция не вернула True, вероятно во '
-                              'время выполнения возникли ошибки.'))
+                                            'время выполнения возникли ошибки.'))
                         break
 
 
@@ -125,7 +128,7 @@ def down(*args, limit=1):
     migrate down читает журнал миграций и откатывает крайнюю
     migrate down --limit 2 откатит последние две миграции
     """
-    path='./migrations'
+    path = './migrations'
 
     meta_connect = None
     pool = DBPool(Postgres)
@@ -149,6 +152,5 @@ def down(*args, limit=1):
                 remove_checkpoint(meta_connect, row.migrate)
             else:
                 logger.error(locale('Прервали выполнение. Миграция не вернула True, вероятно во '
-                      'время выполнения возникли ошибки.'))
+                                    'время выполнения возникли ошибки.'))
                 break
-
