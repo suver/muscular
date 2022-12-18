@@ -1,4 +1,4 @@
-import json
+import json as jsonLib
 
 from .schema import Schema
 
@@ -227,10 +227,10 @@ class Json(BaseField):
         return results
 
     def getstate(self, value) -> dict:
-        return json.loads(value)
+        return jsonLib.loads(value)
 
     def setstate(self, value) -> dict:
-        return json.dumps(value)
+        return jsonLib.dumps(value)
 
 
 class File(BaseField):
