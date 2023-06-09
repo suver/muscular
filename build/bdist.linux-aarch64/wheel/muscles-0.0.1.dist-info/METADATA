@@ -1,0 +1,27 @@
+Metadata-Version: 2.1
+Name: muscles
+Version: 0.0.1
+Summary: Py Framework.
+Home-page: http://freamwork.muscles.space
+Author: Denis Butko
+Author-email: denis@butko.info
+License: MIT
+Requires-Dist: attrs
+Requires-Dist: dnspython
+Requires-Dist: exceptiongroup
+Requires-Dist: greenlet
+Requires-Dist: iniconfig
+Requires-Dist: jsonschema
+Requires-Dist: markupsafe
+Requires-Dist: muscles
+Requires-Dist: packaging
+Requires-Dist: pluggy
+Requires-Dist: pymongo
+Requires-Dist: pyrsistent
+Requires-Dist: pytest
+Requires-Dist: pyyaml
+Requires-Dist: setuptools
+Requires-Dist: tomli
+Requires-Dist: watchdog
+Requires-Dist: werkzeug
+

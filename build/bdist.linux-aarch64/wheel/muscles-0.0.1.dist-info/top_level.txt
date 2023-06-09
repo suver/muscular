@@ -1,0 +1,15 @@
+configuration
+console
+core
+daemon
+data
+locale
+logging
+models
+restful
+schema
+storage
+template
+uwsgi
+watchdog
+wsgi

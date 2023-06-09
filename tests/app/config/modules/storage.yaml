@@ -1,0 +1,6 @@
+storage:
+  package: app.modules.storage
+  name: Storage
+  static_folder: /static/storage
+  upload_url: ./storage
+  upload_folder: !basepath storage
