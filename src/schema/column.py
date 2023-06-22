@@ -85,6 +85,5 @@ class Column(BaseColumn):
             "value": self.default,
             "primary_key": self.primary_key,
             "example": self.example,
-            "example1": self.example,
         })
         return results

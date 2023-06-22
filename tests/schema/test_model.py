@@ -57,6 +57,7 @@ def test_zero():
     :return:
     """
     u = SchTest(id="id")
+    print(u)
     assert u.dump() == column_id_SchTest
 
 

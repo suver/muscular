@@ -1,5 +1,6 @@
 from __future__ import annotations
 from .command import Group, Command
+
 import os
 
 
@@ -47,3 +48,4 @@ console = Console()
 
 
 cli = console.root_group
+

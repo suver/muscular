@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 from .__about__ import __version__, __description__
 import os
+
 from .src.storage import StorageMapper
 from .src.logging.logger import Logger
 from .src.locale.locale import Locale
@@ -26,6 +27,8 @@ from .src.core.instance import MuscularSingletonMeta, PackageMeta, Main
 from .src.core.metaclass import SingletonMeta
 from .src.wsgi import WsgiStrategy, routes, Routes
 from .src.console import *
+from .src.daemon.factory import daemon, daemonFactory
+from .src.daemon.strategy import daemon, DaemonStrategy
 from .src.configuration import *
 from .src.data import *
 from .src.core import *
@@ -47,6 +50,11 @@ from .src.schema import Json
 __all__ = (
     "__version__",
     "__description__",
+    "DaemonStrategy",
+    "daemonFactory",
+    "daemon",
+    "Swagger",
+    "Swagger",
     "Swagger",
     "BaseParameter",
     "HeaderParameter",
