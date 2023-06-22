@@ -1,4 +1,5 @@
 README.md
+pyproject.toml
 setup.py
 src/configuration/__init__.py
 src/configuration/configure.py
@@ -28,6 +29,7 @@ src/daemon/strategy.py
 src/data/__about__.py
 src/data/__init__.py
 src/data/database.py
+src/data/datalayer.py
 src/data/datamaper.py
 src/data/driver.py
 src/data/migration.py

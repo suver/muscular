@@ -9,6 +9,7 @@ from .self import Prop
 from ..wsgi import Request
 from ..storage import StorageMapper
 
+
 storageMapper = StorageMapper()
 
 
@@ -66,20 +67,27 @@ class MuscularSingletonMeta(type):
         """
         super().__init_subclass__()
 
+        locale = storageMapper.get('locale')
+        logger = storageMapper.get('logger')
+
         directory = os.getcwd()
         # Для примера создадим реестр всех наследников.
         # cls.registry.append(cls)
 
         if hasattr(cls, 'package_paths') and isinstance(cls.package_paths, list):
             for path in cls.package_paths:
+                logger.debug(locale('Найден компонент {package}',
+                                    package=f"{directory}/{path}"))
                 sys.path.append(f"{directory}/{path}")
         elif hasattr(cls, 'package_paths') and isinstance(cls.package_paths, dict):
             for item in cls.package_paths:
+                logger.debug(locale('Найден компонент {package}',
+                                    package=f"{directory}/{cls.package_paths[item]}"))
                 sys.path.append(f"{directory}/{cls.package_paths[item]}")
 
     def __new__(cls, class_name, parents, attributes, *args, **kwargs):
         """
-        Модифицируем экземпляр класса, внедряя внего дополнительные возможности
+        Модифицируем экземпляр класса, внедряя в него дополнительные возможности
 
         :param class_name:
         :param parents:
@@ -131,6 +139,8 @@ class MuscularSingletonMeta(type):
         """
         locale = storageMapper.get('locale')
         logger = storageMapper.get('logger')
+
+        logger.debug(locale('Попытка загрузить пакет {package}', package=package))
         try:
             if package in sys.modules:
                 logger.debug(locale('Пакет {package} уже загружен', package=package))
@@ -145,9 +155,9 @@ class MuscularSingletonMeta(type):
                 logger.warning(locale('Пакет {package} не найден', package=package))
                 return
             if config is not None:
-                module.init_package(cls, config)
                 logger.debug(locale('Инициализируем {package} с настройками {config}',
-                                    package=package, config=config.__dict__))
+                                    package=package, config=config))
+                module.init_package(cls, config)
             # spec = importlib.util.find_spec('.', package=package)
             # print(spec.name)
             # # if importlib.util.find_spec(package) is not None:
@@ -181,7 +191,7 @@ class MuscularSingletonMeta(type):
         Преобразуем конфигурацию пакета
 
         :param package_obj: конфигурация пакета
-        :param init_key: ключь пакета
+        :param init_key: ключ пакета
         :return:
         """
         locale = storageMapper.get('locale')
@@ -212,12 +222,18 @@ class MuscularSingletonMeta(type):
         :param config: объект конфигурации
         :return:
         """
+        locale = storageMapper.get('locale')
+        logger = storageMapper.get('logger')
+        logger.debug(locale('Загружаем пакеты'))
         if package_paths is None:
             package_paths = self.package_paths or []
         for item in package_paths:
+            logger.debug(locale('Обработка пакета {package}', package=item))
             if item not in config:
+                logger.debug(locale('Конфигурация пакета {package} не найдена', package=item))
                 continue
             for init_key in config[item]:
+                logger.debug(locale('Подключаем пакет {package} {init_key}', package=item, init_key=init_key))
                 package = config[item][init_key]
                 self.import_package(package['package'], config=self.get_package_config(package, init_key=init_key))
 

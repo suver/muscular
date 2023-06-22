@@ -1,13 +1,10 @@
 attrs
-dnspython
-exceptiongroup
 greenlet
 iniconfig
 jsonschema
-markupsafe
-muscles
 packaging
 pluggy
+py
 pymongo
 pyrsistent
 pytest

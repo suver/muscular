@@ -93,7 +93,8 @@ class StorageMapper:
         Установит текущую стратегию
         """
         if not issubclass(strategy, StorageStrategy):
-            raise Exception('ObjectStorage.strategy = %s -> The class is not an instance %s' % (strategy, StorageStrategy))
+            raise Exception(
+                'ObjectStorage.strategy = %s -> The class is not an instance %s' % (strategy, StorageStrategy))
         self._strategy = strategy
 
     @property
@@ -147,7 +148,7 @@ class StorageMapper:
         obj = self._storage()
         return key in obj
 
-    def add(self, key, value, *args, instance=None, **kwargs):
+    def add(self, key, value, *args, instance=None, ignore_if_exists=False, **kwargs):
         """
         Заносит класс объекта в хранилище с дополнительными проверками.
         Рекомендуется к использованию вместо обращения os[key] = class
@@ -159,7 +160,7 @@ class StorageMapper:
         :param kwargs: словарь для передачи конструктору объекта
         :return:
         """
-        if key in self:
+        if key in self and ignore_if_exists == False:
             raise Exception('ObjectStorage.add(%s, %s) -> Key already added' % (key, value))
         self[key] = (value, args, kwargs, instance)
 

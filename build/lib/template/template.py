@@ -1,5 +1,4 @@
 import json
-
 from jinja2 import Environment
 from jinja2.loaders import FileSystemLoader, PackageLoader, BaseLoader
 from jinja2.loaders import FunctionLoader, PrefixLoader
@@ -90,7 +89,6 @@ class TemplateLoader(BaseLoader):
                 if self.load_config.get('.'.join([path])).items():
                     for module in self.load_config.get('.'.join([path])):
                         package = self.load_config.get('.'.join([path, module, 'package'])).value()
-                        # print('>>>>>>', package, path, module)
                         self.mapping[package] = PackageLoader(package, self.load_config.get(
                             '.'.join([path, module, 'templates']), 'templates').value())
         elif isinstance(package_paths, dict):
