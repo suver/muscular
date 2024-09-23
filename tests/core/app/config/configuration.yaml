@@ -1,0 +1,20 @@
+main:
+  BASEDIR: !basedir
+  BASE_URL: !environ BASE_URL or localhost:5050
+  SERVER_NAME: !environ SERVER_NAME or localhost:5050
+  HOST: !environ HOST or localhost
+  PORT: !environ PORT or 5050
+  ENV: !environ FLASK_ENV or production
+  DEBUG: !environ DEBUG or False
+  TIMEZONE: UTC
+  MAIN_ROUTE: page.index
+  SQLALCHEMY_DATABASE_URI: !secret SQLALCHEMY_DATABASE_URI
+  SQLALCHEMY_TRACK_MODIFICATIONS: True
+  SQLALCHEMY_ON: True
+  PROJECT_ROOT: !basepath
+  STATICFILES_DIRS: !basepath static
+  SESSION_KEY_PREFIX: session
+  SESSION_TYPE: filesystem
+  SECRET_KEY: !environ SECRET_KEY or dhU73jslvbglsjg&20lfjsl
+
+

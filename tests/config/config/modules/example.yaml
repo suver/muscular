@@ -1,0 +1,6 @@
+example:
+  package: app.modules.example
+  name: Example
+  static_folder: /static/main
+  sensor: !include ./config/sensors.yaml
+
