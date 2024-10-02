@@ -349,8 +349,6 @@ class Itinerary:
                         'instance': self,
                     })
             node = node.instance(chunk, full_route=full_route, key=key, dictionary_key=dictionary_key, rule=rule)
-        # print('Added router %s (Key: %s, Content Type: %s, Method: %s, Redirect: %s)',
-        #      route, node.key, content_type or '*/*', method or '*', redirect or 'None')
         handler.node = node
         handler.full_route = full_route
 
