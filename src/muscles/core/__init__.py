@@ -42,6 +42,7 @@ from .schema import RobotUser
 from .schema import SystemUser
 from .schema import GuestUser
 from .schema import User
+from .schema import Relation
 from .schema import Numeric
 from .schema import Boolean
 from .schema import List
@@ -102,6 +103,7 @@ __all__ = (
     "Watchdog",
     "Boolean",
     "List",
+    "Relation",
     "Email",
     "Phone",
     "Time",

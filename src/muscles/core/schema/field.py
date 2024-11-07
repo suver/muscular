@@ -66,6 +66,18 @@ class BaseField(Schema):
         return value
 
 
+class Relation(BaseField):
+    data_type = 'object'
+    data_format = None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def validate(self, value, field=None):
+        return True
+
+
+
 class Boolean(BaseField):
     data_type = 'boolean'
 
@@ -558,7 +570,6 @@ class Timestamp(DateTime):
 
     def from_dict(self, value, column):
         return value
-
 
 
 class Time(DateTime):

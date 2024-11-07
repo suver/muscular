@@ -27,6 +27,7 @@ __all__ = (
     "Model",
     "BaseGroup",
     "Group",
+    "Relation",
     "Boolean",
     "List",
     "Email",
