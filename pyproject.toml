@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "muscles"
-version = "0.0.3"
+version = "0.0.4"
 description = ""
 authors = ["Denis B. <denis@butko.info>"]
 packages = [{include = "muscles", from = "src"}]

@@ -77,7 +77,6 @@ class Relation(BaseField):
         return True
 
 
-
 class Boolean(BaseField):
     data_type = 'boolean'
 
@@ -90,6 +89,53 @@ class Boolean(BaseField):
                                          str(field), str(value)
                 ))
         return True
+
+
+class Json(BaseField):
+    data_type = 'json'
+
+    def __init__(self, *args, length=56000, **kwargs):
+        kwargs['length'] = length
+        super().__init__(*args, **kwargs)
+        self.length = length
+
+    def dump(self) -> dict:
+        results = super().dump()
+        results.update({
+            "length": self.length,
+        })
+        return results
+
+    def getstate(self, value, column) -> dict:
+        if value is None and callable(column.default):
+            value = column.default()
+        elif value is None:
+            value = column.default
+
+        # Убедимся, что значение — это строка
+        if isinstance(value, str):
+            try:
+                # Пытаемся загрузить строку как JSON
+                return json.loads(value)
+            except json.JSONDecodeError as e:
+                # Если не удалось, возвращаем пустой словарь
+                return {}
+        elif isinstance(value, (dict, list)):
+            # Если значение уже является словарем или списком, возвращаем его
+            return value
+        else:
+            # Для любых других типов данных возвращаем пустой словарь
+            return {}
+
+    def setstate(self, value, column) -> dict:
+        if value is None and callable(column.default):
+            value = column.default()
+        elif value is None:
+            value = column.default
+        return jsonLib.dumps(value)
+
+    def get_dict(self, value, column):
+        return value
 
 
 class List(BaseField):
@@ -427,42 +473,6 @@ class String(BaseField):
                                                 str(field), str(value)
                                   ))
         return True
-
-
-class Json(BaseField):
-    data_type = 'json'
-
-    def __init__(self, *args, length=56000, **kwargs):
-        kwargs['length'] = length
-        super().__init__(*args, **kwargs)
-        self.length = length
-
-    def dump(self) -> dict:
-        results = super().dump()
-        results.update({
-            "length": self.length,
-        })
-        return results
-
-    def getstate(self, value, column) -> dict:
-        if value is None and callable(column.default):
-            value = column.default()
-        elif value is None:
-            value = column.default
-        try:
-            return json.load(value)
-        except Exception as e:
-            return {}
-
-    def setstate(self, value, column) -> dict:
-        if value is None and callable(column.default):
-            value = column.default()
-        elif value is None:
-            value = column.default
-        return jsonLib.dumps(value)
-
-    def get_dict(self, value, column):
-        return value
 
 
 class File(BaseField):
