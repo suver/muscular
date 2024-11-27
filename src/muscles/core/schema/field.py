@@ -107,18 +107,24 @@ class Json(BaseField):
         return results
 
     def getstate(self, value, column) -> dict:
+        """
+        Метод для получения значения в формате словаря или списка из входных данных.
+
+        :param value: Значение из базы данных или другое входное значение.
+        :param column: Информация о столбце (содержит default, если значение None).
+        :return: Словарь или список, если значение валидное, иначе пустой словарь/список.
+        """
         if value is None and callable(column.default):
             value = column.default()
         elif value is None:
             value = column.default
 
-        # Убедимся, что значение — это строка
         if isinstance(value, str):
             try:
                 # Пытаемся загрузить строку как JSON
                 return json.loads(value)
-            except json.JSONDecodeError as e:
-                # Если не удалось, возвращаем пустой словарь
+            except json.JSONDecodeError:
+                # Если строка невалидна как JSON, возвращаем пустой словарь
                 return {}
         elif isinstance(value, (dict, list)):
             # Если значение уже является словарем или списком, возвращаем его
@@ -127,12 +133,35 @@ class Json(BaseField):
             # Для любых других типов данных возвращаем пустой словарь
             return {}
 
-    def setstate(self, value, column) -> dict:
+    def setstate(self, value, column) -> str:
+        """
+        Метод для сохранения значения в формате JSON-строки.
+
+        :param value: Значение, которое нужно преобразовать в строку.
+        :param column: Информация о столбце (содержит default, если значение None).
+        :return: JSON-строка.
+        """
         if value is None and callable(column.default):
             value = column.default()
         elif value is None:
             value = column.default
-        return jsonLib.dumps(value)
+
+        # Если значение уже строка, убедимся, что это валидный JSON
+        if isinstance(value, str):
+            try:
+                # Проверяем, что строка может быть загружена как JSON
+                json.loads(value)
+                return value  # Уже валидный JSON
+            except json.JSONDecodeError:
+                # Если строка невалидна, пробуем преобразовать значение в JSON-строку
+                pass
+
+        try:
+            # Преобразуем значение в JSON-строку
+            return json.dumps(value, ensure_ascii=False)
+        except (TypeError, ValueError):
+            # Если значение не может быть преобразовано в JSON, возвращаем пустой объект
+            return '{}'
 
     def get_dict(self, value, column):
         return value
